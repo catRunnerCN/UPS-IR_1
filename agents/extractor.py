@@ -3,34 +3,63 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass
-import re
 from pathlib import Path
 from typing import Any, Dict, Optional
 
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
-import os
 
 
 logger = logging.getLogger(__name__)
 
 PROMPT_TEMPLATE = (
-    "请从以下论文文本中抽取关键信息并以 JSON 格式输出：\n"
-    "- meta: {{title, authors, venue, year}}\n"
-    "- tasks: [id, name]\n"
-    "- methods: [id, name, uses_datasets, uses_equations]\n"
-    "- datasets: [id, name, split]\n"
-    "- equations: [id, latex, units]\n"
-    "- experiments: [method, dataset, metrics]\n"
-    "- relations: [{{from, to, type}}]\n\n"
-    "对引用字段的额外要求：\n"
-    "1. methods[*].uses_datasets 必须填写 datasets 列表中的 id（例如 d1）。\n"
-    "2. methods[*].uses_equations 必须填写 equations 列表中的 id（例如 eq1）。\n"
-    "3. experiments[*].method 和 experiments[*].dataset 也必须引用对应列表的 id。\n"
-    "4. relations[*].from / relations[*].to 只能使用 tasks、methods、datasets、equations 列表中的 id。\n\n"
-    "论文内容：\"\"\"{text}\"\"\""
+    "You are an expert scientific information extraction assistant. Your task is to extract structured UPS-IR information "
+    "from the following academic paper text. Output MUST be a valid JSON object strictly following the schema below.\n\n"
+    "Additional requirements for referenced fields:"
+    "1. methods[*].uses_datasets must specify an ID from the datasets list (e.g., d1)."
+    "2. methods[*].uses_equations must specify an ID from the equations list (e.g., eq1)."
+    "3. experiments[*].method and experiments[*].dataset must also reference corresponding list IDs.\n"
+    "4. relations[*].from / relations[*].to may only use IDs from the tasks, methods, datasets, or equations lists.\n\n"
+    
+    "Use the following format:\n"
+    "{\n"
+    '  "meta": {\n'
+    '    "title": str,\n'
+    '    "authors": [str],\n'
+    '    "venue": str,\n'
+    '    "year": int\n'
+    '  },\n'
+    '  "tasks": [\n'
+    '    {"id": "t1", "name": str}, ...\n'
+    '  ],\n'
+    '  "methods": [\n'
+    '    {"id": "m1", "name": str, "uses_datasets": [str], "uses_equations": [str]}, ...\n'
+    '  ],\n'
+    '  "datasets": [\n'
+    '    {"id": "d1", "name": str, "split": {"train": int}}, ...\n'
+    '  ],\n'
+    '  "equations": [\n'
+    '    {"id": "e1", "latex": str, "units": str}, ...\n'
+    '  ],\n'
+    '  "experiments": [\n'
+    '    {"method": "m1", "dataset": "d1", "metrics": [{"name": str, "value": float}]}, ...\n'
+    '  ],\n'
+    '  "relations": [\n'
+    '    {"from": str, "to": str, "type": str}, ...\n'
+    '  ]\n'
+    '}\n\n'
+
+    "Rules:\n"
+    "- All IDs must follow the format 't1', 'm1', 'd1', 'e1' etc.\n"
+    "- Do not invent content not present in the text.\n"
+    "- Avoid paraphrasing; prefer exact phrases from the text.\n"
+    "- Only output the final JSON. No explanation or commentary.\n\n"
+
+    "Thesis content:\n\"\"\"\n{text}\n\"\"\""
 )
+
+
 
 @dataclass
 class ExtractorConfig:
@@ -51,21 +80,7 @@ class ExtractorAgent:
         self.config.output_path = self.config.output_path.resolve()
         self.config.output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        if llm is not None:
-            self.llm = llm
-        else:
-            base_url = os.getenv("OPENAI_BASE_URL") or os.getenv("OPENAI_API_BASE") or "https://api.openai.com/v1"
-            if not base_url.rstrip("/").endswith("/v1"):
-                base_url = base_url.rstrip("/") + "/v1"
-            api_key = os.getenv("OPENAI_API_KEY")
-            self.llm = ChatOpenAI(
-                model=self.config.model_name,
-                temperature=self.config.temperature,
-                base_url=base_url,
-                api_key=api_key,
-                timeout=60,
-                max_retries=2,
-            )
+        self.llm = llm or ChatOpenAI(model=self.config.model_name, temperature=self.config.temperature)
         self.prompt = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
         self._chain = self.prompt | self.llm | StrOutputParser()
 
@@ -93,22 +108,12 @@ class ExtractorAgent:
         if cleaned.startswith("```"):
             cleaned = ExtractorAgent._strip_fences(cleaned)
 
-        def _parse(payload: str) -> Dict[str, Any]:
-            parsed = json.loads(payload)
+        try:
+            parsed = json.loads(cleaned)
             if not isinstance(parsed, dict):
                 raise ValueError("Expected a JSON object at the top level.")
             return parsed
-
-        try:
-            return _parse(cleaned)
         except json.JSONDecodeError as exc:
-            if "Invalid \\escape" in str(exc):
-                repaired = ExtractorAgent._escape_invalid_backslashes(cleaned)
-                if repaired != cleaned:
-                    try:
-                        return _parse(repaired)
-                    except json.JSONDecodeError:
-                        pass
             raise ValueError(f"ExtractorAgent received non-JSON output: {exc}\nContent:\n{cleaned}") from exc
 
     @staticmethod
@@ -119,13 +124,3 @@ class ExtractorAgent:
         if lines and lines[-1].startswith("```"):
             lines = lines[:-1]
         return "\n".join(lines).strip()
-
-    @staticmethod
-    def _escape_invalid_backslashes(payload: str) -> str:
-        """
-        Double-escape lone backslashes that would break JSON decoding.
-        Keeps valid JSON escapes (e.g. \\n, \\t, \\u) unchanged.
-        """
-
-        pattern = r"(?<!\\)\\(?![\"\\/bfnrtu])"
-        return re.sub(pattern, r"\\\\", payload)
