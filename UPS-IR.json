@@ -1,0 +1,138 @@
+{
+  "version": "1.0",
+  "generated_at": "2025-11-06T22:46:18.772127+00:00",
+  "meta": {
+    "title": "Attention Is All You Need",
+    "authors": [
+      "Ashish Vaswani",
+      "Noam Shazeer",
+      "Niki Parmar",
+      "Jakob Uszkoreit",
+      "Llion Jones",
+      "Aidan N. Gomez",
+      "Lukasz Kaiser",
+      "Illia Polosukhin"
+    ],
+    "venue": "NeurIPS",
+    "year": 2017
+  },
+  "tasks": [
+    {
+      "id": "t1",
+      "name": "Machine Translation"
+    },
+    {
+      "id": "t2",
+      "name": "English Constituency Parsing"
+    }
+  ],
+  "methods": [
+    {
+      "id": "m1",
+      "name": "Transformer",
+      "uses_datasets": [
+        "d1",
+        "d2"
+      ],
+      "uses_equations": [
+        "eq1",
+        "eq2"
+      ]
+    },
+    {
+      "id": "m2",
+      "name": "Multi-Head Attention",
+      "uses_datasets": [
+        "d1",
+        "d2"
+      ],
+      "uses_equations": [
+        "eq1"
+      ]
+    },
+    {
+      "id": "m3",
+      "name": "Position-wise Feed-Forward Network",
+      "uses_datasets": [
+        "d1",
+        "d2"
+      ],
+      "uses_equations": [
+        "eq2"
+      ]
+    }
+  ],
+  "datasets": [
+    {
+      "id": "d1",
+      "name": "WMT 2014 English-to-German",
+      "split": "train"
+    },
+    {
+      "id": "d2",
+      "name": "WMT 2014 English-to-French",
+      "split": "train"
+    }
+  ],
+  "equations": [
+    {
+      "id": "eq1",
+      "latex": "Attention(Q,K,V) = softmax\\left(\\frac{QK^{T}}{\\sqrt{d_{k}}}\\right)V",
+      "units": "dimensionless"
+    },
+    {
+      "id": "eq2",
+      "latex": "FFN(x) = max(0,xW_{1}+b_{1})W_{2}+b_{2}",
+      "units": "dimensionless"
+    }
+  ],
+  "experiments": [
+    {
+      "method": "m1",
+      "dataset": "d1",
+      "metrics": []
+    },
+    {
+      "method": "m1",
+      "dataset": "d2",
+      "metrics": []
+    }
+  ],
+  "relations": [
+    {
+      "from": "t1",
+      "to": "m1",
+      "type": "uses"
+    },
+    {
+      "from": "t1",
+      "to": "m2",
+      "type": "uses"
+    },
+    {
+      "from": "t1",
+      "to": "m3",
+      "type": "uses"
+    },
+    {
+      "from": "m1",
+      "to": "d1",
+      "type": "evaluated_on"
+    },
+    {
+      "from": "m1",
+      "to": "d2",
+      "type": "evaluated_on"
+    },
+    {
+      "from": "m2",
+      "to": "eq1",
+      "type": "uses"
+    },
+    {
+      "from": "m3",
+      "to": "eq2",
+      "type": "uses"
+    }
+  ]
+}

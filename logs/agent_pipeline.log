@@ -1,0 +1,651 @@
+2025-10-30 15:35:09,003 [ERROR] root - Pipeline execution failed: No module named 'langchain_openai'
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\main.py", line 202, in <module>
+    main()
+  File "H:\UPS-IR_1\main.py", line 187, in main
+    agents = create_agents(agent_sequence, args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\main.py", line 68, in create_agents
+    from agents.reader import ReaderAgent, ReaderConfig  # lazy import
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\agents\__init__.py", line 4, in <module>
+    from .extractor import ExtractorAgent
+  File "H:\UPS-IR_1\agents\extractor.py", line 11, in <module>
+    from langchain_openai import ChatOpenAI
+ModuleNotFoundError: No module named 'langchain_openai'
+2025-10-30 15:35:32,510 [INFO] root - Running pipeline sequentially with agents: reader
+2025-10-30 15:35:32,511 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\test2\part.md
+2025-10-30 15:35:32,511 [WARNING] root - UPS-IR structure not present in state after sequential run.
+2025-10-30 15:35:32,511 [INFO] root - Pipeline execution completed.
+2025-10-30 15:36:12,957 [INFO] root - Running pipeline sequentially with agents: reader
+2025-10-30 15:36:12,958 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\test2\part.md
+2025-10-30 15:36:12,958 [WARNING] root - UPS-IR structure not present in state after sequential run.
+2025-10-30 15:36:12,958 [INFO] root - Pipeline execution completed.
+2025-10-30 15:37:25,629 [INFO] root - Running pipeline sequentially with agents: reader
+2025-10-30 15:37:39,881 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 15:37:52,078 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 15:38:00,412 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 15:38:14,705 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 15:38:14,707 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\output\paper_with_images.md
+2025-10-30 15:38:14,708 [WARNING] root - UPS-IR structure not present in state after sequential run.
+2025-10-30 15:38:14,708 [INFO] root - Pipeline execution completed.
+2025-10-30 15:49:18,847 [INFO] root - Running pipeline sequentially with agents: reader, extractor
+2025-10-30 15:49:18,847 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\test2\part.md
+2025-10-30 15:49:19,690 [INFO] openai._base_client - Retrying request to /chat/completions in 0.440009 seconds
+2025-10-30 15:49:20,132 [INFO] openai._base_client - Retrying request to /chat/completions in 0.926188 seconds
+2025-10-30 15:49:21,112 [ERROR] root - Pipeline execution failed: Connection error.
+Traceback (most recent call last):
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpx\_transports\default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpcore\_sync\connection_pool.py", line 256, in handle_request
+    raise exc from None
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpcore\_sync\connection_pool.py", line 236, in handle_request
+    response = connection.handle_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpcore\_sync\connection.py", line 101, in handle_request
+    raise exc
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpcore\_sync\connection.py", line 78, in handle_request
+    stream = self._connect(request)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpcore\_sync\connection.py", line 124, in _connect
+    stream = self._network_backend.connect_tcp(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpcore\_backends\sync.py", line 207, in connect_tcp
+    with map_exceptions(exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ConnectError: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\openai\_base_client.py", line 982, in request
+    response = self._client.send(
+               ^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpx\_client.py", line 914, in send
+    response = self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpx\_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpx\_transports\default.py", line 249, in handle_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ConnectError: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\main.py", line 226, in <module>
+    main()
+  File "H:\UPS-IR_1\main.py", line 218, in main
+    state = run_sequential(agent_sequence, agents)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\main.py", line 158, in run_sequential
+    state = agent.run(state)  # type: ignore[attr-defined]
+            ^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\agents\extractor.py", line 56, in run
+    raw_response = self._chain.invoke({"text": state["text"]})
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\langchain_core\runnables\base.py", line 3090, in invoke
+    input_ = context.run(step.invoke, input_, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\langchain_core\language_models\chat_models.py", line 379, in invoke
+    self.generate_prompt(
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1088, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\langchain_core\language_models\chat_models.py", line 903, in generate
+    self._generate_with_cache(
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1192, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\langchain_openai\chat_models\base.py", line 1299, in _generate
+    raise e
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\langchain_openai\chat_models\base.py", line 1294, in _generate
+    raw_response = self.client.with_raw_response.create(**payload)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\openai\_legacy_response.py", line 364, in wrapped
+    return cast(LegacyAPIResponse[R], func(*args, **kwargs))
+                                      ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\openai\_utils\_utils.py", line 286, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\openai\resources\chat\completions\completions.py", line 1156, in create
+    return self._post(
+           ^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\openai\_base_client.py", line 1259, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\openai\_base_client.py", line 1014, in request
+    raise APIConnectionError(request=request) from err
+openai.APIConnectionError: Connection error.
+2025-10-30 15:50:56,177 [INFO] root - Running pipeline sequentially with agents: reader, extractor
+2025-10-30 15:50:56,178 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\test2\part.md
+2025-10-30 15:51:03,880 [INFO] httpx - HTTP Request: POST https://free.v36.cm/v1/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 15:51:03,893 [WARNING] root - UPS-IR structure not present in state after sequential run.
+2025-10-30 15:51:03,893 [INFO] root - Pipeline execution completed.
+2025-10-30 15:54:51,271 [INFO] root - Running pipeline sequentially with agents: reader, extractor
+2025-10-30 15:55:03,737 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 15:55:12,312 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 15:55:21,466 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 15:55:32,740 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 15:55:32,747 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\output\paper_with_images.md
+2025-10-30 15:55:40,062 [INFO] httpx - HTTP Request: POST https://free.v36.cm/v1/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 15:55:40,076 [WARNING] root - UPS-IR structure not present in state after sequential run.
+2025-10-30 15:55:40,076 [INFO] root - Pipeline execution completed.
+2025-10-30 15:59:30,728 [INFO] root - Running pipeline sequentially with agents: reader, extractor, structurer
+2025-10-30 15:59:30,728 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\test2\part.md
+2025-10-30 16:00:16,260 [INFO] httpx - HTTP Request: POST https://free.v36.cm/v1/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 16:00:16,271 [INFO] agents.structurer - StructurerAgent wrote UPS-IR JSON to H:\UPS-IR_1\UPS-IR.json
+2025-10-30 16:00:16,271 [INFO] root - Pipeline execution completed.
+2025-10-30 17:25:29,749 [ERROR] root - Pipeline execution failed: Unsupported agent 'structure'. Valid options: reader, extractor, structurer, verifier, synthesizer
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\main.py", line 226, in <module>
+    main()
+  File "H:\UPS-IR_1\main.py", line 210, in main
+    agent_sequence = parse_agent_sequence(args.agents)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\main.py", line 139, in parse_agent_sequence
+    raise ValueError(f"Unsupported agent '{agent_name}'. Valid options: {', '.join(valid_order)}")
+ValueError: Unsupported agent 'structure'. Valid options: reader, extractor, structurer, verifier, synthesizer
+2025-10-30 17:25:48,910 [ERROR] root - Pipeline execution failed: Unsupported agent 'structuer'. Valid options: reader, extractor, structurer, verifier, synthesizer
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\main.py", line 226, in <module>
+    main()
+  File "H:\UPS-IR_1\main.py", line 210, in main
+    agent_sequence = parse_agent_sequence(args.agents)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\main.py", line 139, in parse_agent_sequence
+    raise ValueError(f"Unsupported agent '{agent_name}'. Valid options: {', '.join(valid_order)}")
+ValueError: Unsupported agent 'structuer'. Valid options: reader, extractor, structurer, verifier, synthesizer
+2025-10-30 17:26:12,140 [INFO] root - Running pipeline sequentially with agents: reader, extractor, structurer
+2025-10-30 17:26:26,764 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 17:26:35,057 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 17:26:44,477 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 17:26:55,277 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 17:26:55,279 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\output\paper_with_images.md
+2025-10-30 17:27:03,568 [INFO] httpx - HTTP Request: POST https://free.v36.cm/v1/chat/completions "HTTP/1.1 200 OK"
+2025-10-30 17:27:03,582 [INFO] agents.structurer - StructurerAgent wrote UPS-IR JSON to H:\UPS-IR_1\UPS-IR.json
+2025-10-30 17:27:03,588 [INFO] root - Pipeline execution completed.
+2025-11-06 16:54:20,503 [INFO] root - Running pipeline sequentially with agents: reader, extractor, structurer, verifier, synthesizer
+2025-11-06 16:54:33,549 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 16:54:42,947 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 16:54:50,486 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 16:54:56,499 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 16:54:56,501 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\output\paper_with_images.md
+2025-11-06 16:55:07,693 [INFO] httpx - HTTP Request: POST https://free.v36.cm/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 16:55:07,705 [ERROR] root - Pipeline execution failed: ExtractorAgent received non-JSON output: Invalid \escape: line 66 column 53 (char 1287)
+Content:
+{
+  "meta": {
+    "title": "Attention Is All You Need",
+    "authors": [
+      "Ashish Vaswani",
+      "Noam Shazeer",
+      "Niki Parmar",
+      "Jakob Uszkoreit",
+      "Llion Jones",
+      "Aidan N. Gomez",
+      "Lukasz Kaiser",
+      "Illia Polosukhin"
+    ],
+    "venue": "NeurIPS",
+    "year": 2017
+  },
+  "tasks": [
+    {
+      "id": 1,
+      "name": "Machine Translation"
+    },
+    {
+      "id": 2,
+      "name": "English Constituency Parsing"
+    }
+  ],
+  "methods": [
+    {
+      "id": 1,
+      "name": "Transformer",
+      "uses_datasets": [
+        {
+          "id": 1,
+          "name": "WMT 2014 English-to-German",
+          "split": "test"
+        },
+        {
+          "id": 2,
+          "name": "WMT 2014 English-to-French",
+          "split": "test"
+        }
+      ],
+      "uses_equations": [1, 2, 3, 4, 5]
+    }
+  ],
+  "datasets": [
+    {
+      "id": 1,
+      "name": "WMT 2014 English-to-German",
+      "split": "test"
+    },
+    {
+      "id": 2,
+      "name": "WMT 2014 English-to-French",
+      "split": "test"
+    }
+  ],
+  "equations": [
+    {
+      "id": 1,
+      "latex": "Attention(Q, K, V) = softmax\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V",
+      "units": "dimensionless"
+    },
+    {
+      "id": 2,
+      "latex": "MultiHead(Q, K, V) = Concat(head_1, \ldots, head_h)W^O",
+      "units": "dimensionless"
+    },
+    {
+      "id": 3,
+      "latex": "FFN(x) = \\max(0, xW_1 + b_1)W_2 + b_2",
+      "units": "dimensionless"
+    },
+    {
+      "id": 4,
+      "latex": "PE(pos, 2i) = \\sin\\left(pos / 10000^{2i/d_{model}}\\right)",
+      "units": "dimensionless"
+    },
+    {
+      "id": 5,
+      "latex": "PE(pos, 2i+1) = \\cos\\left(pos / 10000^{2i/d_{model}}\\right)",
+      "units": "dimensionless"
+    }
+  ],
+  "experiments": [
+    {
+      "method": "Transformer",
+      "dataset": "WMT 2014 English-to-German",
+      "metrics": {
+        "BLEU": 28.4
+      }
+    },
+    {
+      "method": "Transformer",
+      "dataset": "WMT 2014 English-to-French",
+      "metrics": {
+        "BLEU": 41.8
+      }
+    }
+  ],
+  "relations": [
+    {
+      "from": "Transformer",
+      "to": "Self-attention",
+      "type": "uses"
+    },
+    {
+      "from": "Self-attention",
+      "to": "Multi-head attention",
+      "type": "is a type of"
+    },
+    {
+      "from": "Position-wise Feed-forward Networks",
+      "to": "Transformer",
+      "type": "part of"
+    },
+    {
+      "from": "Positional Encoding",
+      "to": "Transformer",
+      "type": "enhances"
+    }
+  ]
+}
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\agents\extractor.py", line 92, in _try_parse_json
+    parsed = json.loads(cleaned)
+             ^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\json\__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\json\decoder.py", line 338, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Anaconda\envs\Agent\Lib\json\decoder.py", line 354, in raw_decode
+    obj, end = self.scan_once(s, idx)
+               ^^^^^^^^^^^^^^^^^^^^^^
+json.decoder.JSONDecodeError: Invalid \escape: line 66 column 53 (char 1287)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\main.py", line 226, in <module>
+    main()
+  File "H:\UPS-IR_1\main.py", line 218, in main
+    state = run_sequential(agent_sequence, agents)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\main.py", line 158, in run_sequential
+    state = agent.run(state)  # type: ignore[attr-defined]
+            ^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\agents\extractor.py", line 74, in run
+    info = self._try_parse_json(raw_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\agents\extractor.py", line 97, in _try_parse_json
+    raise ValueError(f"ExtractorAgent received non-JSON output: {exc}\nContent:\n{cleaned}") from exc
+ValueError: ExtractorAgent received non-JSON output: Invalid \escape: line 66 column 53 (char 1287)
+Content:
+{
+  "meta": {
+    "title": "Attention Is All You Need",
+    "authors": [
+      "Ashish Vaswani",
+      "Noam Shazeer",
+      "Niki Parmar",
+      "Jakob Uszkoreit",
+      "Llion Jones",
+      "Aidan N. Gomez",
+      "Lukasz Kaiser",
+      "Illia Polosukhin"
+    ],
+    "venue": "NeurIPS",
+    "year": 2017
+  },
+  "tasks": [
+    {
+      "id": 1,
+      "name": "Machine Translation"
+    },
+    {
+      "id": 2,
+      "name": "English Constituency Parsing"
+    }
+  ],
+  "methods": [
+    {
+      "id": 1,
+      "name": "Transformer",
+      "uses_datasets": [
+        {
+          "id": 1,
+          "name": "WMT 2014 English-to-German",
+          "split": "test"
+        },
+        {
+          "id": 2,
+          "name": "WMT 2014 English-to-French",
+          "split": "test"
+        }
+      ],
+      "uses_equations": [1, 2, 3, 4, 5]
+    }
+  ],
+  "datasets": [
+    {
+      "id": 1,
+      "name": "WMT 2014 English-to-German",
+      "split": "test"
+    },
+    {
+      "id": 2,
+      "name": "WMT 2014 English-to-French",
+      "split": "test"
+    }
+  ],
+  "equations": [
+    {
+      "id": 1,
+      "latex": "Attention(Q, K, V) = softmax\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V",
+      "units": "dimensionless"
+    },
+    {
+      "id": 2,
+      "latex": "MultiHead(Q, K, V) = Concat(head_1, \ldots, head_h)W^O",
+      "units": "dimensionless"
+    },
+    {
+      "id": 3,
+      "latex": "FFN(x) = \\max(0, xW_1 + b_1)W_2 + b_2",
+      "units": "dimensionless"
+    },
+    {
+      "id": 4,
+      "latex": "PE(pos, 2i) = \\sin\\left(pos / 10000^{2i/d_{model}}\\right)",
+      "units": "dimensionless"
+    },
+    {
+      "id": 5,
+      "latex": "PE(pos, 2i+1) = \\cos\\left(pos / 10000^{2i/d_{model}}\\right)",
+      "units": "dimensionless"
+    }
+  ],
+  "experiments": [
+    {
+      "method": "Transformer",
+      "dataset": "WMT 2014 English-to-German",
+      "metrics": {
+        "BLEU": 28.4
+      }
+    },
+    {
+      "method": "Transformer",
+      "dataset": "WMT 2014 English-to-French",
+      "metrics": {
+        "BLEU": 41.8
+      }
+    }
+  ],
+  "relations": [
+    {
+      "from": "Transformer",
+      "to": "Self-attention",
+      "type": "uses"
+    },
+    {
+      "from": "Self-attention",
+      "to": "Multi-head attention",
+      "type": "is a type of"
+    },
+    {
+      "from": "Position-wise Feed-forward Networks",
+      "to": "Transformer",
+      "type": "part of"
+    },
+    {
+      "from": "Positional Encoding",
+      "to": "Transformer",
+      "type": "enhances"
+    }
+  ]
+}
+2025-11-06 16:59:45,329 [INFO] root - Running pipeline sequentially with agents: reader, extractor, structurer, verifier, synthesizer
+2025-11-06 16:59:56,695 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:00:10,253 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:00:22,578 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:00:34,721 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:00:34,724 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\output\paper_with_images.md
+2025-11-06 17:00:44,242 [INFO] httpx - HTTP Request: POST https://free.v36.cm/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:00:44,256 [INFO] agents.structurer - StructurerAgent wrote UPS-IR JSON to H:\UPS-IR_1\UPS-IR.json
+2025-11-06 17:00:44,257 [ERROR] root - Pipeline execution failed: UPS-IR schema validation failed: 1 is not of type 'string'
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\agents\verifier.py", line 146, in run
+    self.validator.validate(ups_ir)
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\jsonschema\validators.py", line 451, in validate
+    raise error
+jsonschema.exceptions.ValidationError: 1 is not of type 'string'
+
+Failed validating 'type' in schema['properties']['tasks']['items']['properties']['id']:
+    {'type': 'string'}
+
+On instance['tasks'][0]['id']:
+    1
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\main.py", line 226, in <module>
+    main()
+  File "H:\UPS-IR_1\main.py", line 218, in main
+    state = run_sequential(agent_sequence, agents)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\main.py", line 151, in run_sequential
+    verified = agent.run(state)  # type: ignore[attr-defined]
+               ^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\agents\verifier.py", line 148, in run
+    raise ValueError(f"UPS-IR schema validation failed: {exc.message}") from exc
+ValueError: UPS-IR schema validation failed: 1 is not of type 'string'
+2025-11-06 17:02:23,091 [INFO] root - Running pipeline sequentially with agents: reader, extractor, structurer, verifier, synthesizer
+2025-11-06 17:02:33,820 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:02:45,113 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:02:52,131 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:03:04,843 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:03:04,846 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\output\paper_with_images.md
+2025-11-06 17:03:45,249 [INFO] httpx - HTTP Request: POST https://free.v36.cm/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:03:45,258 [INFO] agents.structurer - StructurerAgent wrote UPS-IR JSON to H:\UPS-IR_1\UPS-IR.json
+2025-11-06 17:03:45,259 [ERROR] root - Pipeline execution failed: UPS-IR schema validation failed: {'BLEU': 28.4} is not of type 'array'
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\agents\verifier.py", line 146, in run
+    self.validator.validate(ups_ir)
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\jsonschema\validators.py", line 451, in validate
+    raise error
+jsonschema.exceptions.ValidationError: {'BLEU': 28.4} is not of type 'array'
+
+Failed validating 'type' in schema['properties']['experiments']['items']['properties']['metrics']:
+    {'type': 'array', 'items': {'type': 'object'}, 'default': []}
+
+On instance['experiments'][0]['metrics']:
+    {'BLEU': 28.4}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\main.py", line 226, in <module>
+    main()
+  File "H:\UPS-IR_1\main.py", line 218, in main
+    state = run_sequential(agent_sequence, agents)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\main.py", line 151, in run_sequential
+    verified = agent.run(state)  # type: ignore[attr-defined]
+               ^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\agents\verifier.py", line 148, in run
+    raise ValueError(f"UPS-IR schema validation failed: {exc.message}") from exc
+ValueError: UPS-IR schema validation failed: {'BLEU': 28.4} is not of type 'array'
+2025-11-06 17:11:57,731 [INFO] root - Running pipeline sequentially with agents: reader, extractor, structurer, verifier, synthesizer
+2025-11-06 17:12:10,497 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:12:22,842 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:12:35,777 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:12:40,991 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:12:40,994 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\output\paper_with_images.md
+2025-11-06 17:12:49,614 [INFO] httpx - HTTP Request: POST https://free.v36.cm/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:12:49,627 [INFO] agents.structurer - StructurerAgent wrote UPS-IR JSON to H:\UPS-IR_1\UPS-IR.json
+2025-11-06 17:12:49,628 [ERROR] root - Pipeline execution failed: UPS-IR schema validation failed: True is not of type 'array'
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\agents\verifier.py", line 146, in run
+    self.validator.validate(ups_ir)
+  File "E:\Anaconda\envs\Agent\Lib\site-packages\jsonschema\validators.py", line 451, in validate
+    raise error
+jsonschema.exceptions.ValidationError: True is not of type 'array'
+
+Failed validating 'type' in schema['properties']['methods']['items']['properties']['uses_equations']:
+    {'type': 'array', 'items': {'type': 'string'}, 'default': []}
+
+On instance['methods'][0]['uses_equations']:
+    True
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\main.py", line 226, in <module>
+    main()
+  File "H:\UPS-IR_1\main.py", line 218, in main
+    state = run_sequential(agent_sequence, agents)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\main.py", line 151, in run_sequential
+    verified = agent.run(state)  # type: ignore[attr-defined]
+               ^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\agents\verifier.py", line 148, in run
+    raise ValueError(f"UPS-IR schema validation failed: {exc.message}") from exc
+ValueError: UPS-IR schema validation failed: True is not of type 'array'
+2025-11-06 17:21:52,372 [INFO] root - Running pipeline sequentially with agents: reader, extractor, structurer, verifier, synthesizer
+2025-11-06 17:22:04,502 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:22:17,568 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:22:26,598 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:22:35,034 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:22:35,038 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\output\paper_with_images.md
+2025-11-06 17:22:43,718 [INFO] httpx - HTTP Request: POST https://free.v36.cm/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:22:43,761 [INFO] agents.structurer - StructurerAgent wrote UPS-IR JSON to H:\UPS-IR_1\UPS-IR.json
+2025-11-06 17:22:43,762 [ERROR] root - Pipeline execution failed: Method 1 references unknown dataset 'WMT 2014 English-to-German'.
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\main.py", line 226, in <module>
+    main()
+  File "H:\UPS-IR_1\main.py", line 218, in main
+    state = run_sequential(agent_sequence, agents)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\main.py", line 151, in run_sequential
+    verified = agent.run(state)  # type: ignore[attr-defined]
+               ^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\agents\verifier.py", line 150, in run
+    self._check_integrity(ups_ir)
+  File "H:\UPS-IR_1\agents\verifier.py", line 160, in _check_integrity
+    self._validate_method_links(ups_ir.get("methods", []), dataset_ids, equation_ids)
+  File "H:\UPS-IR_1\agents\verifier.py", line 183, in _validate_method_links
+    raise ValueError(f"Method {method.get('id')} references unknown dataset '{dataset}'.")
+ValueError: Method 1 references unknown dataset 'WMT 2014 English-to-German'.
+2025-11-06 17:30:28,928 [INFO] root - Running pipeline sequentially with agents: reader, extractor, structurer, verifier, synthesizer
+2025-11-06 17:30:40,561 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:30:48,825 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:30:58,427 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:31:07,508 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:31:07,511 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\output\paper_with_images.md
+2025-11-06 17:31:15,710 [INFO] httpx - HTTP Request: POST https://free.v36.cm/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:31:15,734 [INFO] agents.structurer - StructurerAgent wrote UPS-IR JSON to H:\UPS-IR_1\UPS-IR.json
+2025-11-06 17:31:15,737 [ERROR] root - Pipeline execution failed: Method 1 references unknown equation 'Attention(Q,K,V)=softmax(QK^T/sqrt(d_k))V'.
+Traceback (most recent call last):
+  File "H:\UPS-IR_1\main.py", line 226, in <module>
+    main()
+  File "H:\UPS-IR_1\main.py", line 218, in main
+    state = run_sequential(agent_sequence, agents)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\main.py", line 151, in run_sequential
+    verified = agent.run(state)  # type: ignore[attr-defined]
+               ^^^^^^^^^^^^^^^^
+  File "H:\UPS-IR_1\agents\verifier.py", line 212, in run
+    self._check_integrity(ups_ir)
+  File "H:\UPS-IR_1\agents\verifier.py", line 223, in _check_integrity
+    self._validate_method_links(methods, refs)
+  File "H:\UPS-IR_1\agents\verifier.py", line 248, in _validate_method_links
+    raise ValueError(f"Method {handle} references unknown equation '{equation}'.")
+ValueError: Method 1 references unknown equation 'Attention(Q,K,V)=softmax(QK^T/sqrt(d_k))V'.
+2025-11-06 17:45:23,333 [INFO] root - Running pipeline sequentially with agents: reader, extractor, structurer, verifier, synthesizer
+2025-11-06 17:45:36,154 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:45:47,149 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:46:00,581 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:46:11,949 [INFO] httpx - HTTP Request: POST https://ark.cn-beijing.volces.com/api/v3/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:46:11,953 [INFO] agents.reader - ReaderAgent ingesting markdown from H:\UPS-IR_1\output\paper_with_images.md
+2025-11-06 17:46:18,763 [INFO] httpx - HTTP Request: POST https://free.v36.cm/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-06 17:46:18,773 [INFO] agents.structurer - StructurerAgent wrote UPS-IR JSON to H:\UPS-IR_1\UPS-IR.json
+2025-11-06 17:46:18,773 [INFO] agents.verifier - VerifierAgent validation successful.
+2025-11-06 17:46:18,774 [INFO] agents.synthesizer - SynthesizerAgent wrote H:\UPS-IR_1\UPS-IR_Output\version.json
+2025-11-06 17:46:18,774 [INFO] agents.synthesizer - SynthesizerAgent wrote H:\UPS-IR_1\UPS-IR_Output\generated_at.json
+2025-11-06 17:46:18,777 [INFO] agents.synthesizer - SynthesizerAgent wrote H:\UPS-IR_1\UPS-IR_Output\meta.json
+2025-11-06 17:46:18,778 [INFO] agents.synthesizer - SynthesizerAgent wrote H:\UPS-IR_1\UPS-IR_Output\tasks.json
+2025-11-06 17:46:18,778 [INFO] agents.synthesizer - SynthesizerAgent wrote H:\UPS-IR_1\UPS-IR_Output\methods.json
+2025-11-06 17:46:18,779 [INFO] agents.synthesizer - SynthesizerAgent wrote H:\UPS-IR_1\UPS-IR_Output\datasets.json
+2025-11-06 17:46:18,780 [INFO] agents.synthesizer - SynthesizerAgent wrote H:\UPS-IR_1\UPS-IR_Output\equations.json
+2025-11-06 17:46:18,781 [INFO] agents.synthesizer - SynthesizerAgent wrote H:\UPS-IR_1\UPS-IR_Output\experiments.json
+2025-11-06 17:46:18,782 [INFO] agents.synthesizer - SynthesizerAgent wrote H:\UPS-IR_1\UPS-IR_Output\relations.json
+2025-11-06 17:46:18,782 [INFO] root - Pipeline execution completed.

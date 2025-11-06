@@ -1,0 +1,37 @@
+[
+  {
+    "from": "t1",
+    "to": "m1",
+    "type": "uses"
+  },
+  {
+    "from": "t1",
+    "to": "m2",
+    "type": "uses"
+  },
+  {
+    "from": "t1",
+    "to": "m3",
+    "type": "uses"
+  },
+  {
+    "from": "m1",
+    "to": "d1",
+    "type": "evaluated_on"
+  },
+  {
+    "from": "m1",
+    "to": "d2",
+    "type": "evaluated_on"
+  },
+  {
+    "from": "m2",
+    "to": "eq1",
+    "type": "uses"
+  },
+  {
+    "from": "m3",
+    "to": "eq2",
+    "type": "uses"
+  }
+]

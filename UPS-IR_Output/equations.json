@@ -1,0 +1,12 @@
+[
+  {
+    "id": "eq1",
+    "latex": "Attention(Q,K,V) = softmax\\left(\\frac{QK^{T}}{\\sqrt{d_{k}}}\\right)V",
+    "units": "dimensionless"
+  },
+  {
+    "id": "eq2",
+    "latex": "FFN(x) = max(0,xW_{1}+b_{1})W_{2}+b_{2}",
+    "units": "dimensionless"
+  }
+]

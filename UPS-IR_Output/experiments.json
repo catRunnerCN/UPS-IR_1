@@ -1,0 +1,12 @@
+[
+  {
+    "method": "m1",
+    "dataset": "d1",
+    "metrics": []
+  },
+  {
+    "method": "m1",
+    "dataset": "d2",
+    "metrics": []
+  }
+]

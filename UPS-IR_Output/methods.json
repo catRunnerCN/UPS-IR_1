@@ -1,0 +1,36 @@
+[
+  {
+    "id": "m1",
+    "name": "Transformer",
+    "uses_datasets": [
+      "d1",
+      "d2"
+    ],
+    "uses_equations": [
+      "eq1",
+      "eq2"
+    ]
+  },
+  {
+    "id": "m2",
+    "name": "Multi-Head Attention",
+    "uses_datasets": [
+      "d1",
+      "d2"
+    ],
+    "uses_equations": [
+      "eq1"
+    ]
+  },
+  {
+    "id": "m3",
+    "name": "Position-wise Feed-Forward Network",
+    "uses_datasets": [
+      "d1",
+      "d2"
+    ],
+    "uses_equations": [
+      "eq2"
+    ]
+  }
+]

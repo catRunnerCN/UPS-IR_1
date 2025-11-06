@@ -1,0 +1,12 @@
+[
+  {
+    "id": "d1",
+    "name": "WMT 2014 English-to-German",
+    "split": "train"
+  },
+  {
+    "id": "d2",
+    "name": "WMT 2014 English-to-French",
+    "split": "train"
+  }
+]
