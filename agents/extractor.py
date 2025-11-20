@@ -135,7 +135,7 @@ class ExtractorConfig:
 
 class ExtractorAgent:
     """
-    Call an LLM via LangChain to convert raw text into structured UPS-IR fields.
+    Call an LLLM via LangChain to convert raw text into structured UPS-IR fields.
     """
 
     def __init__(self, config: Optional[ExtractorConfig] = None, llm: Optional[ChatOpenAI] = None):
