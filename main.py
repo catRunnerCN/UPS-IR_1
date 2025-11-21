@@ -19,8 +19,8 @@ def set_api_keys_inline() -> None:
     WARNING: Do not commit real keys in shared repos. This is per-user testing.
     """
     # User-provided testing endpoint and key
-    OPENAI_BASE_URL = "https://free.v36.cm"
-    OPENAI_API_KEY = "sk-7ZbCxMZf6z1zAUzc23850f736aA344B1A98c5d3cB81a3911"
+    OPENAI_BASE_URL = "https://api.openai.com/v1"
+    OPENAI_API_KEY = ""#your OPENAI API KEY here
 
     os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
     # Prefer newer var; keep legacy for compatibility across libs
