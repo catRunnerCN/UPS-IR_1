@@ -19,8 +19,8 @@ def set_api_keys_inline() -> None:
     WARNING: Do not commit real keys in shared repos. This is per-user testing.
     """
     # User-provided testing endpoint and key
-    OPENAI_BASE_URL = "https://free.v36.cm"
-    OPENAI_API_KEY = "sk-7ZbCxMZf6z1zAUzc23850f736aA344B1A98c5d3cB81a3911"
+    OPENAI_BASE_URL = "https://api.openai.com/v1"
+    OPENAI_API_KEY = "your OPENAI API KEY here"
 
     os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
     # Prefer newer var; keep legacy for compatibility across libs
@@ -54,7 +54,7 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
     parser.add_argument(
         "--agents",
         type=str,
-        default="reader,extractor,structurer,verifier,synthesizer",
+        default="reader,extractor,faithfulness",
         help="Comma-separated list indicating which agents to run in order.",
     )
     parser.add_argument(
@@ -97,7 +97,7 @@ def create_agents(agent_names: list[str], args: argparse.Namespace) -> Dict[str,
             )
         )
 
-    if "extractor" in agent_names or args.use_graph:
+    if "extractor" in agent_names:
         from agents.extractor import ExtractorAgent, ExtractorConfig  # lazy import
 
         agents["extractor"] = ExtractorAgent(
@@ -108,19 +108,29 @@ def create_agents(agent_names: list[str], args: argparse.Namespace) -> Dict[str,
             )
         )
 
-    if "structurer" in agent_names or args.use_graph:
+    if "structurer" in agent_names:
         from agents.structurer import StructurerAgent, StructurerConfig  # lazy import
 
         agents["structurer"] = StructurerAgent(
             StructurerConfig(output_path=Path("UPS-IR.json"))
         )
 
-    if "verifier" in agent_names or args.use_graph:
+    if "verifier" in agent_names:
         from agents.verifier import VerifierAgent  # lazy import
 
         agents["verifier"] = VerifierAgent()
 
-    if "synthesizer" in agent_names or args.use_graph:
+    if "faithfulness" in agent_names:
+        from agents.faithfulness import FaithfulnessVerifierAgent, FaithfulnessConfig  # lazy import
+
+        agents["faithfulness"] = FaithfulnessVerifierAgent(
+            FaithfulnessConfig(
+                output_path=Path("output") / "extracted_info.json",
+                report_path=Path("output") / "faithfulness_report.json",
+            )
+        )
+
+    if "synthesizer" in agent_names:
         from agents.synthesizer import SynthesizerAgent, SynthesizerConfig  # lazy import
 
         agents["synthesizer"] = SynthesizerAgent(
@@ -132,7 +142,7 @@ def create_agents(agent_names: list[str], args: argparse.Namespace) -> Dict[str,
 
 def parse_agent_sequence(agent_string: str) -> List[str]:
     sequence = [item.strip().lower() for item in agent_string.split(",") if item.strip()]
-    valid_order = ["reader", "extractor", "structurer", "verifier", "synthesizer"]
+    valid_order = ["reader", "extractor", "faithfulness", "structurer", "verifier", "synthesizer"]
 
     for agent_name in sequence:
         if agent_name not in valid_order:
@@ -157,39 +167,49 @@ def run_sequential(agent_names: List[str], agents: Dict[str, object]) -> Pipelin
         else:
             state = agent.run(state)  # type: ignore[attr-defined]
 
-    if "ups_ir" not in state:
+    if "structurer" in agent_names and "ups_ir" not in state:
         logging.warning("UPS-IR structure not present in state after sequential run.")
 
     return state
 
 
-def run_via_graph(agents: Dict[str, object]) -> PipelineState:
+def run_via_graph(agent_names: List[str], agents: Dict[str, object]) -> PipelineState:
     try:
         from langgraph.graph import END, StateGraph
     except ImportError as exc:
         raise RuntimeError("LangGraph is not installed. Install it or run without --use-graph.") from exc
 
+    if not agent_names:
+        raise ValueError("At least one agent must be specified when using LangGraph.")
+
     builder: StateGraph = StateGraph(PipelineState)
 
-    builder.add_node("reader", lambda s: agents["reader"].run(s))  # type: ignore[attr-defined]
-    builder.add_node("extractor", lambda s: agents["extractor"].run(s))  # type: ignore[attr-defined]
-    builder.add_node("structurer", lambda s: agents["structurer"].run(s))  # type: ignore[attr-defined]
+    for name in agent_names:
+        if name not in agents:
+            raise ValueError(f"Agent '{name}' was not created.")
 
-    def verifier_wrapper(state: PipelineState) -> PipelineState:
-        result = agents["verifier"].run(state)  # type: ignore[attr-defined]
-        if not result:
-            raise RuntimeError("VerifierAgent rejected the UPS-IR structure.")
-        return state
+        agent = agents[name]
 
-    builder.add_node("verifier", verifier_wrapper)
-    builder.add_node("synthesizer", lambda s: agents["synthesizer"].run(s))  # type: ignore[attr-defined]
+        if name == "verifier":
+            def _make_verifier_node(verifier_agent):
+                def _node(state: PipelineState) -> PipelineState:
+                    result = verifier_agent.run(state)  # type: ignore[attr-defined]
+                    if not result:
+                        raise RuntimeError("VerifierAgent rejected the UPS-IR structure.")
+                    state.setdefault("artifacts", {})
+                    state["artifacts"]["verified"] = "True"
+                    return state
 
-    builder.set_entry_point("reader")
-    builder.add_edge("reader", "extractor")
-    builder.add_edge("extractor", "structurer")
-    builder.add_edge("structurer", "verifier")
-    builder.add_edge("verifier", "synthesizer")
-    builder.add_edge("synthesizer", END)
+                return _node
+
+            builder.add_node(name, _make_verifier_node(agent))
+        else:
+            builder.add_node(name, lambda s, agent=agent: agent.run(s))  # type: ignore[attr-defined]
+
+    builder.set_entry_point(agent_names[0])
+    for src, dst in zip(agent_names, agent_names[1:]):
+        builder.add_edge(src, dst)
+    builder.add_edge(agent_names[-1], END)
 
     graph = builder.compile()
     return graph.invoke(initial_state())
@@ -212,7 +232,7 @@ def main(argv: Iterable[str] | None = None) -> PipelineState:
 
     if args.use_graph:
         logging.info("Running pipeline via LangGraph.")
-        state = run_via_graph(agents)
+        state = run_via_graph(agent_sequence, agents)
     else:
         logging.info("Running pipeline sequentially with agents: %s", ", ".join(agent_sequence))
         state = run_sequential(agent_sequence, agents)

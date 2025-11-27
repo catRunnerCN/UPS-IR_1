@@ -16,87 +16,27 @@ from langchain_openai import ChatOpenAI
 logger = logging.getLogger(__name__)
 
 PROMPT_TEMPLATE = (
-    "You are a scientific information extraction assistant.\n"
-    "Your task is to extract structured UPS-IR data from the paper text below and output a valid JSON.\n"
-    "Strictly follow the schema below. Do not invent or omit fields. Only extract if clearly supported by the text.\n\n"
-
-    "Cross-reference constraints:\n"
-    "- All IDs must be explicit: t1, m1, d1, e1, etc.\n"
-    "- All references between methods, datasets, equations, and experiments must use IDs from their respective sections.\n"
-    "- If a dataset or equation is used in an experiment or method, it must also appear in methods[*].uses_* and relations[*].\n\n"
-
-    "Schema:\n"
-    "{{\n"
-    "  \"meta\": {{\"title\": str, \"authors\": [str], \"venue\": str, \"year\": int}},\n\n"
-
-    "  \"tasks\": [\n"
-    "    {{\"id\": \"t1\", \"name\": str}}, ...\n"
-    "  ],\n\n"
-
-    "  \"methods\": [\n"
-    "    {{\n"
-    "      \"id\": \"m1\", \"name\": str,\n"
-    "      \"uses_datasets\": [\"d1\"],\n"
-    "      \"uses_equations\": [\"e1\"],\n"
-    "      \"components\": [str],            // e.g. [\"encoder\", \"attention\"]\n"
-    "      \"inherits_from\": [str],         // e.g. [\"Transformer\"]\n"
-    "      \"framework\": str                // e.g. \"PyTorch\"\n"
-    "    }}, ...\n"
-    "  ],\n\n"
-
-    "  \"datasets\": [\n"
-    "    {{\n"
-    "      \"id\": \"d1\", \"name\": str,\n"
-    "      \"description\": str,             // e.g. \"parallel corpus for translation\"\n"
-    "      \"modality\": str,                // one of: image, text, audio, graph\n"
-    "      \"split\": {{\"train\": int, \"test\": int, \"val\": int}}\n"
-    "    }}, ...\n"
-    "  ],\n\n"
-
-    "  \"equations\": [\n"
-    "    {{\n"
-    "      \"id\": \"e1\", \"latex\": str, \"units\": str,\n"
-    "      \"defines\": str,                // e.g. \"loss\", \"attention\"\n"
-    "      \"type\": str,                   // e.g. \"embedding\", \"loss\", \"transition\"\n"
-    "      \"variables\": [str]             // e.g. [\"Q\", \"K\", \"V\", \"d_k\"]\n"
-    "    }}, ...\n"
-    "  ],\n\n"
-
-    "  \"experiments\": [\n"
-    "    {{\n"
-    "      \"method\": \"m1\", \"dataset\": \"d1\",\n"
-    "      \"hyperparameters\": {{\"lr\": float, \"batch_size\": int}},\n"
-    "      \"setup\": str,                  // e.g. \"8×A100, 80GB\"\n"
-    "      \"metrics\": [{{\"name\": str, \"value\": float}}],\n"
-    "      \"repeat\": int,                 // number of times averaged\n"
-    "      \"compare_to\": [\"m2\"]         // baseline methods by ID\n"
-    "    }}, ...\n"
-    "  ],\n\n"
-
-    "  \"relations\": [\n"
-    "    {{\"from\": str, \"to\": str, \"type\": str}}, ...\n"
-    "  ],\n\n"
-
-    "  \"references\": [\n"
-    "    {{\"target\": str, \"type\": str}}, ...\n"
-    "  ],\n\n"
-
-    "  \"schema_version\": \"1.1\",\n"
-    "  \"history\": [\n"
-    "    {{\"by\": str, \"date\": str, \"changes\": str}}\n"
-    "  ]\n"
-    "}}\n\n"
-
-    "Instructions:\n"
-    "- Output must be valid JSON only\n"
-    "- Do not paraphrase; use phrases from the text verbatim when possible\n"
-    "- Do not invent content not present in the text\n"
-    "- Leave values empty only if the paper provides no clue\n"
-    "- If the user supplies clarifications, integrate them exactly as stated\n\n"
-
+    "You are given the full text of a scientific research paper. Your task is to extract a structured UPS-IR representation of its content. Output must be a single valid JSON object with exactly the following top-level keys: metadata, problem, model, dataset, and experiments. Do not output any extra text outside the JSON. Follow these instructions carefully:\n\n"
+    "metadata: Include key bibliographic and contextual fields. For example: title, authors (as a list), year, venue or conference, keywords (if given), DOI or arXiv ID (if available). Ensure consistent field naming (e.g. use snake_case for keys). Provide each field's content as a string or appropriate JSON type. If a field is not present, set it to null or an empty list.\n\n"
+    "problem: Summarize the research problem and objectives. Include fields such as objective (the main goal or hypothesis), task (e.g. \"image classification\", \"regression\" etc.), and motivation or background if relevant. Mention the core problem statement or research question the paper addresses. Be concise but complete, and avoid any unrelated details.\n\n"
+    "model: Describe the proposed model or method. Include:\n\n"
+    "architecture: a brief description of the model architecture (e.g. \"Transformer-based encoder-decoder\", \"CNN with residual blocks\", etc.).\n\n"
+    "components or submodules: list and describe major sub-modules or layers (e.g. embedding layer, attention module, decoder head, loss function).\n\n"
+    "formulas: an array of mathematical equations used by the model; each should be a LaTeX string. For example, include loss functions or important equations from the paper. Optionally, you can parse each formula into variables (e.g. variables: {{\"x\": \"input image\", \"y\": \"label\", ...}}) under each formula entry.\n\n"
+    "pseudocode or algorithm: if the paper provides algorithmic steps or pseudocode, include a concise version here as text.\n\n"
+    "flow or execution_flow: if applicable, list the sequence of module calls or data flow between components (e.g. [\"tokenizer\", \"encoder\", \"decoder\", \"classifier\"]). This should clarify how data moves through the model.\n\n"
+    "dataset: Provide details about the data. Include fields such as name (if the dataset has a specific name), num_samples (total number of data points), num_classes (for classification tasks), and features or input_dimensions if specified. Describe any data preprocessing steps (e.g. normalization, augmentation) and how the data is split (e.g. train/validation/test ratios or counts). If multiple datasets are used, list each as a separate entry in an array with the above details.\n\n"
+    "experiments: Describe the experimental setup and results. Include:\n\n"
+    "training_strategy: e.g. optimizer used, learning rate schedule, number of epochs, batch size.\n\n"
+    "hyperparameters: any key hyperparameters with their values (learning rate, momentum, weight decay, etc.).\n\n"
+    "evaluation_protocol: metrics used to evaluate (e.g. accuracy, F1 score), validation scheme (cross-validation, hold-out test set), and baseline comparisons if mentioned.\n\n"
+    "results: key quantitative results (e.g. test accuracy or error rates) for the main experiments.\n\n"
+    "hardware: computational resources used (e.g. GPU type, number of GPUs) if specified.\n\n"
+    "reproducibility: any details that support reproducibility (e.g. random seed, code repository link).\n\n"
+    "procedure: briefly outline the experiment workflow (data loading -> training -> evaluation).\n\n"
+    "General requirements: Follow UPS-IR design principles: make the JSON compact and machine-parseable with clear, consistent naming. Preserve LaTeX formatting in the formulas fields (do not convert or simplify them). Make sure every field is explained and filled appropriately; if information is missing in the paper, use null or empty arrays/objects rather than omit the field. Use consistent identifiers so cross-references are clear (for example, if the experiments section mentions a dataset, it should match the name given in dataset). Avoid redundancy: do not repeat the same information in multiple sections. Return only the JSON object as the final answer.\n\n"
     "User clarifications (may be \"None\"):\n"
     "{clarifications}\n\n"
-
     "Paper content:\n\"\"\"\n{text}\n\"\"\""
 
 )
@@ -132,10 +72,10 @@ class ExtractorConfig:
     temperature: float = 0.0
     ask_user_when_unsure: bool = True
 
-
+# ab
 class ExtractorAgent:
     """
-    Call an LLM via LangChain to convert raw text into structured UPS-IR fields.
+    Call an LLLM via LangChain to convert raw text into structured UPS-IR fields.
     """
 
     def __init__(self, config: Optional[ExtractorConfig] = None, llm: Optional[ChatOpenAI] = None):
