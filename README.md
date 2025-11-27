@@ -1,8 +1,9 @@
 ﻿# UPS-IR Agent Pipeline
 
-- TODO1: Improve Extractor prompt to capture deeper UPS-IR details.
-- TODO2: Add a planner agent before the pipeline.
+- TODO1: Divide the extractor agent
+- TODO2: add search agent
 - TODO3: Try LangGraph execution and branching.
+- TODO4: Restructure the pipeline
 
 A lightweight multi-agent pipeline that turns a paper in Markdown into a structured UPS-IR JSON and per-section artifacts.
 
